@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { server } from "../server";
 
-export class ConsigmentsRepository {
+export class ConsignmentsRepository {
   create(data: Prisma.ConsignmentCreateInput) {
     return server.prisma.consignment.create({ data });
   }

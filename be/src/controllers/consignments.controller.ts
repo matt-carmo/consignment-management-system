@@ -1,14 +1,14 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { ConsigmentsService } from "../services/consigments.service";
 import { Prisma } from "@prisma/client";
-export class ConsigmentsController {
-  private consigmentsService;
+import { ConsignmentsService } from "../services/consignments";
+export class ConsignmentsController {
+  private consignmentsService;
   constructor() {
-    this.consigmentsService = new ConsigmentsService();
+    this.consignmentsService = new ConsignmentsService();
   }
   public async getAll(req: FastifyRequest, res: FastifyReply) {
-    const consigments = await this.consigmentsService.getConsigments();
-    return res.send(consigments);
+    const consignments = await this.consignmentsService.getConsignments();
+    return res.send(consignments);
   }
   public async create(
     req: FastifyRequest<{
@@ -22,7 +22,7 @@ export class ConsigmentsController {
       phone_number: req.body.phone_number,
       user: { connect: { id: req.body.userId } }
     };
-    const consigment = await this.consigmentsService.create(data);
+    const consigment = await this.consignmentsService.create(data);
     return res.status(201).send(consigment);
   }
   public async update(req: FastifyRequest, res: FastifyReply) {}

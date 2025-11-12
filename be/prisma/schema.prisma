@@ -1,71 +1,70 @@
 generator client {
-  provider = "prisma-client-js"
-
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String         @id @default(uuid())
-  email       String         @unique
-  password    String
-  name        String?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+    id        String   @id @default(uuid())
+    email     String   @unique
+    password  String
+    name      String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  products        Product[]
-  consignments    Consignment[]
+    products     Product[]
+    consignments Consignment[]
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  name        String
-  price       Decimal    @db.Decimal(10, 2)
-  description String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+    id          Int      @id @default(autoincrement())
+    name        String
+    price       Decimal  @db.Decimal(10, 2)
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
-  userId      String
-  user        User        @relation(fields: [userId], references: [id])
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
 
-
-  consignmentOrderItems ConsignmentOrderItem[]
+    consignmentOrderItems ConsignmentOrderItem[]
 }
 
 model Consignment {
-  id          String          @id @default(uuid())
-  idx         Int             @unique @default(autoincrement()) // útil para busca simples
-  name        String
-  phone_number String
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  userId      String
-  user        User            @relation(fields: [userId], references: [id])
-  consignmentOrders ConsignmentOrder[]
+    id                String             @id @default(uuid())
+    idx               Int                @unique @default(autoincrement()) // útil para busca simples
+    name              String
+    phone_number      String
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @updatedAt
+    userId            String
+    user              User               @relation(fields: [userId], references: [id])
+    consignmentOrders ConsignmentOrder[]
 }
 
 model ConsignmentOrder {
-  id            Int               @id @default(autoincrement())
-  consignmentId String
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  paid          Boolean           @default(false)
-  paidValue     Decimal?           @db.Decimal(10, 2)
-  paidAt        DateTime?
-  consignment   Consignment       @relation(fields: [consignmentId], references: [id], onDelete: NoAction)
-  consignmentOrderItems ConsignmentOrderItem[]
+    id                    Int                    @id @default(autoincrement())
+    consignmentId         String
+    createdAt             DateTime               @default(now())
+    updatedAt             DateTime               @updatedAt
+    paid                  Boolean                @default(false)
+    totalValue            Decimal                @default(0) @db.Decimal(10, 2)
+    paidValue             Decimal?               @db.Decimal(10, 2)
+    paidAt                DateTime?
+    consignment           Consignment            @relation(fields: [consignmentId], references: [id], onDelete: NoAction)
+    consignmentOrderItems ConsignmentOrderItem[]
 }
 
 model ConsignmentOrderItem {
-  id                 Int               @id @default(autoincrement())
-  consignmentOrderId Int
-  itemId             Int
-  quantity           Int               @default(0)
-  itemPrice          Decimal           @db.Decimal(10, 2)
-  item               Product           @relation(fields: [itemId], references: [id])
-  consignmentOrder   ConsignmentOrder   @relation(fields: [consignmentOrderId], references: [id])
+    id                 Int              @id @default(autoincrement())
+    consignmentOrderId Int
+    itemId             Int
+    quantitySent       Int              @default(0)
+    quantityReturned   Int              @default(0)
+    itemPrice          Decimal          @db.Decimal(10, 2)
+    item               Product          @relation(fields: [itemId], references: [id])
+    consignmentOrder   ConsignmentOrder @relation(fields: [consignmentOrderId], references: [id])
 }
-

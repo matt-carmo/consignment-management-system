@@ -1,23 +1,25 @@
 import fastify, { FastifyRequest } from "fastify";
 import prismaPlugin from "./plugins/prisma";
-import { ConsigmentsController } from "./controllers/consigments.controller";
-import { ConsigmentsOrdersService } from "./services/consigments-orders.service";
-import { ConsigmentsOrdersRepository } from "./repositories/consigments-orders.repository";
+
+import { ConsignmentsOrdersRepository } from "./repositories/consignment-orders.repository";
 import { ERRORS } from "./errors/app.errors";
 import { Prisma } from "@prisma/client";
+import consignmentsRoute from "./routes/consignments.route";
+import { consignmentOrdersRoute } from "./routes/consignment-orders.route";
+import { ConsignmentOrdersService } from "./services/consignment-orders.service";
 
 export const server = fastify();
 export function buildServer() {
   server.register(prismaPlugin);
 
   server.decorate(
-    "consigmentsOrdersService",
-    new ConsigmentsOrdersService(new ConsigmentsOrdersRepository())
+    "consignmentsOrdersService",
+    new ConsignmentOrdersService(new ConsignmentsOrdersRepository())
   );
 
   server.setErrorHandler((error, req, reply) => {
     switch (error.message) {
-      case ERRORS.CONSIGMENTS_NOT_FOUND:
+      case ERRORS.Consignments_NOT_FOUND:
         return reply
           .status(404)
           .send({ message: "Consignados não encontrados" });
@@ -25,37 +27,12 @@ export function buildServer() {
         return reply.status(409).send({ message: "Consignado já cadastrado" });
     }
 
-    return reply.status(500).send({ message: "Erro interno no servidor" });
+    return reply.status(500).send({ message: "Erro interno no servidor", error });
   });
 
-  server.get("/consignments", async (request, reply) => {
-    const consigments = new ConsigmentsController();
-    return consigments.getAll(request, reply);
-  });
-  server.post(
-    "/consignment",
-    async (
-      request: FastifyRequest<{
-        user: { id: string };
-        Body: Prisma.ConsignmentCreateInput & { userId: string };
-      }>,
-      reply
-    ) => {
-      const consigment = new ConsigmentsController();
-      return consigment.create(request, reply);
-    }
-  );
-  server.get(
-    "/consignment/:consignmentId/orders",
-    async (
-      request: FastifyRequest<{ Params: { consignmentId: string } }>,
-      reply
-    ) => {
-      return await request.server.consigmentsOrdersService.findAllById({
-        consignmentId: request.params.consignmentId,
-      });
-    }
-  );
+  server.register(consignmentsRoute);
+  server.register(consignmentOrdersRoute);  
+
 
   server.listen({ port: 8080 }, (err, address) => {
     if (err) {

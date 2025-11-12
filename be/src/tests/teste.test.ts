@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi } from "vitest";
-import { ConsigmentsOrdersService } from "../services/consigments-orders.service";
+import { ConsignmentsOrdersService } from "../services/consignment-orders.service";
 const data = [
   {
     id: 1,
@@ -31,14 +31,14 @@ const data = [
 
 
 
-describe("ConsigmentsOrdersService", () => {
+describe("ConsignmentsOrdersService", () => {
   it("findAllById returns full consignment data with items", async () => {
 
     const mockRepository = {
       findAllById: vi.fn().mockResolvedValue(data),
     };
 
-    const service = new ConsigmentsOrdersService(mockRepository);
+    const service = new ConsignmentsOrdersService(mockRepository);
 
     const result = await service.findAllById({ consignmentId: "1" });
     expect(result).toEqual(data);
@@ -55,7 +55,7 @@ describe("ConsigmentsOrdersService", () => {
     findAllById: vi.fn().mockResolvedValue([]),
   };
 
-  const service = new ConsigmentsOrdersService(mockRepository);
+  const service = new ConsignmentsOrdersService(mockRepository);
 
   await expect(service.findAllById({ consignmentId: "1" }))
     .rejects

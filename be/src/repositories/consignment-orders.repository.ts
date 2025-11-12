@@ -1,7 +1,7 @@
 import { server } from "../server";
 
 
-export class ConsigmentsOrdersRepository {
+export class ConsignmentsOrdersRepository {
   public findAllById({ consignmentId }: { consignmentId: string }) {
     return server.prisma.consignmentOrder.findMany({
       where: {

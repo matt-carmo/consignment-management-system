@@ -9,6 +9,6 @@ declare module "fastify" {
     prisma: PrismaClient;
   }
   interface FastifyInstance {
-    consigmentsOrdersService: ConsigmentsOrdersService
+    consignmentsOrdersService: ConsignmentsOrdersService
   }
 }
