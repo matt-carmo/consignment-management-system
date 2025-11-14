@@ -51,7 +51,6 @@ model ConsignmentOrder {
     createdAt             DateTime               @default(now())
     updatedAt             DateTime               @updatedAt
     paid                  Boolean                @default(false)
-    totalValue            Decimal                @default(0) @db.Decimal(10, 2)
     paidValue             Decimal?               @db.Decimal(10, 2)
     paidAt                DateTime?
     consignment           Consignment            @relation(fields: [consignmentId], references: [id], onDelete: NoAction)
@@ -60,11 +59,13 @@ model ConsignmentOrder {
 
 model ConsignmentOrderItem {
     id                 Int              @id @default(autoincrement())
-    consignmentOrderId Int
-    itemId             Int
+    itemNameSnapshot   String
+    itemPriceSnapshot  Decimal          @db.Decimal(10, 2)
     quantitySent       Int              @default(0)
     quantityReturned   Int              @default(0)
     itemPrice          Decimal          @db.Decimal(10, 2)
+    itemId             Int
     item               Product          @relation(fields: [itemId], references: [id])
+    consignmentOrderId Int
     consignmentOrder   ConsignmentOrder @relation(fields: [consignmentOrderId], references: [id])
 }

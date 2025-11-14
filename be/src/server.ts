@@ -9,9 +9,13 @@ import { consignmentOrdersRoute } from "./routes/consignment-orders.route";
 import { ConsignmentOrdersService } from "./services/consignment-orders.service";
 
 export const server = fastify();
+import cors from "@fastify/cors";
 export function buildServer() {
   server.register(prismaPlugin);
+   server.register(cors, {
+    origin: true,
 
+})
   server.decorate(
     "consignmentsOrdersService",
     new ConsignmentOrdersService(new ConsignmentsOrdersRepository())
@@ -19,10 +23,9 @@ export function buildServer() {
 
   server.setErrorHandler((error, req, reply) => {
     switch (error.message) {
-      case ERRORS.Consignments_NOT_FOUND:
+      case ERRORS.CONSIGNMENTS_NOT_FOUND:
         return reply
-          .status(404)
-          .send({ message: "Consignados não encontrados" });
+          .status(200).send({ message: "Consignados não encontrados", data: [] });
       case ERRORS.CONSIGNMENT_ALREADY_EXISTS:
         return reply.status(409).send({ message: "Consignado já cadastrado" });
     }

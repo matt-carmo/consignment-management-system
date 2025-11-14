@@ -5,11 +5,11 @@ import { ConsignmentOrdersController } from "../controllers/consignment-orders.c
 export function consignmentOrdersRoute(server: FastifyInstance) {
   const controller = new ConsignmentOrdersController();
   server.get(
-    "/consignment/:consignmentId/orders",
-    controller.getConsignmentsOrdersById.bind(controller)
+    "/consignment-orders",
+    controller.getOrders.bind(controller)
   );
   server.get(
     "/consignment-order/:orderId",
-    controller.getConsignmentOrderById.bind(controller)
+    controller.getOrderById.bind(controller)
   );
 }

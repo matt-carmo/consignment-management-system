@@ -1,4 +1,4 @@
 export const ERRORS = {
-  Consignments_NOT_FOUND: "Consignments_NOT_FOUND",
+  CONSIGNMENTS_NOT_FOUND: "Consignments_NOT_FOUND",
   CONSIGNMENT_ALREADY_EXISTS: "CONSIGNMENT_ALREADY_EXISTS",
 };

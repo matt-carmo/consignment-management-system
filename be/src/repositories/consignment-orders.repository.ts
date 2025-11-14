@@ -1,14 +1,30 @@
 import { server } from "../server";
-
+import { ConsignmentOrderFilters } from "../types/consignment-orders/filters";
 
 export class ConsignmentsOrdersRepository {
-  public findAllById({ consignmentId }: { consignmentId: string }) {
+  public findAllById({ params }: { params: ConsignmentOrderFilters }) {
     return server.prisma.consignmentOrder.findMany({
       where: {
-        consignmentId,
+        consignmentId: params.consignmentId,
+        paid: params.paid,
+        createdAt: params.createdAt,
       },
       include: {
-        consignmentOrderItems: true,
+        consignment: true,
+        consignmentOrderItems: {
+          select: {
+            id: true,
+            quantitySent: true,
+            itemPrice: true,
+          },
+        },
+      },
+    });
+  }
+  public findById({ orderId }: { orderId: number }) {
+    return server.prisma.consignmentOrderItem.findMany({
+      where: {
+        consignmentOrderId: orderId,
       },
     });
   }
