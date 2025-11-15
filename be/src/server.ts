@@ -4,7 +4,7 @@ import prismaPlugin from "./plugins/prisma";
 import { ConsignmentsOrdersRepository } from "./repositories/consignment-orders.repository";
 import { ERRORS } from "./errors/app.errors";
 import { Prisma } from "@prisma/client";
-import consignmentsRoute from "./routes/consignments.route";
+import consignmentsRoute from "./routes/consignment.route";
 import { consignmentOrdersRoute } from "./routes/consignment-orders.route";
 import { ConsignmentOrdersService } from "./services/consignment-orders.service";
 
@@ -34,7 +34,7 @@ export function buildServer() {
   });
 
   server.register(consignmentsRoute);
-  server.register(consignmentOrdersRoute);  
+  server.register(consignmentOrdersRoute);
 
 
   server.listen({ port: 8080 }, (err, address) => {

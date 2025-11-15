@@ -1,12 +1,11 @@
-import { ConsignmentsRepository } from "../repositories/consignments.repository";
+
 import { ERRORS } from "../errors/app.errors";
 import { Prisma } from "@prisma/client";
+import { ConsignmentsRepository } from "../repositories/consignment-repository";
 
 export class ConsignmentsService {
-  private consignmentsRepository;
-  constructor() {
-    this.consignmentsRepository = new ConsignmentsRepository();
-  }
+  
+  constructor(private consignmentsRepository: ConsignmentsRepository) {}
   public async create(data: Prisma.ConsignmentCreateInput) {
     const consigment = await this.consignmentsRepository.create(data);
     if (!consigment) {
@@ -17,7 +16,7 @@ export class ConsignmentsService {
   public async getConsignments() {
     const consignments = await this.consignmentsRepository.findAll();
     if (!consignments.length) {
-      throw new Error(ERRORS.Consignments_NOT_FOUND);
+      throw new Error(ERRORS.CONSIGNMENTS_NOT_FOUND);
     }
     return consignments;
   }

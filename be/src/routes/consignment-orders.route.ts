@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import { ConsignmentsController } from "../controllers/consignments.controller";
 import { ConsignmentOrdersController } from "../controllers/consignment-orders.controller";
 
 export function consignmentOrdersRoute(server: FastifyInstance) {

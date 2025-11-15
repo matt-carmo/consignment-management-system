@@ -34,7 +34,7 @@ export class ConsignmentOrdersService {
     }
      const totalValue = consignmentOrderItems.reduce(
        (acc, item) => {
-         const price = Number(item.itemPrice);
+         const price = Number(item.itemPriceSnapshot);
          const quantity = Number(item.quantitySent);
          return acc + price * quantity;
        },
@@ -42,7 +42,7 @@ export class ConsignmentOrdersService {
      );
      const totalValueReturn = consignmentOrderItems.reduce(
        (acc, item) => {
-         const price = Number(item.itemPrice);
+         const price = Number(item.itemPriceSnapshot);
          const quantity = Number(item.quantityReturned);
          return acc + price * quantity;
        },
@@ -50,9 +50,9 @@ export class ConsignmentOrdersService {
      );
 
     return {
-      totalValueReturn,
-      totalValue,
-      ...consignmentOrderItems,
-    };
+        consignmentOrderItems,
+        totalValue,
+        totalValueReturn
+    }
   }
 }

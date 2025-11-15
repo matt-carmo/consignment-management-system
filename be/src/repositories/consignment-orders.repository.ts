@@ -9,13 +9,28 @@ export class ConsignmentsOrdersRepository {
         paid: params.paid,
         createdAt: params.createdAt,
       },
-      include: {
-        consignment: true,
+      select: {
+        id: true,
+        consignmentId: true,
+        createdAt: true,
+        paid: true,
+        paidValue: true,
+        paidAt: true,
+
+        consignment: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+          },
+        },
+
         consignmentOrderItems: {
           select: {
             id: true,
             quantitySent: true,
-            itemPrice: true,
+            itemPriceSnapshot: true,
+            quantityReturned: true,
           },
         },
       },

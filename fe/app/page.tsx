@@ -1,33 +1,28 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Package } from "lucide-react";
+import { ConsignmentOrder } from "@/interfaces/consignment-order.interface";
+import { Package, Plus } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import useSWR from "swr";
+import { getOrders } from "./lib/api/orders";
 
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error("Falha ao carregar os dados");
-  }
-  return res.json();
-};
+
+// import { fetcher } from "./lib/api/fetcher";
+
+
 export default function ConsignmentOrderPage() {
-  const params = useParams();
-
-  const {
-    data = [],
-    error,
-    isLoading,
-  } = useSWR(`http://localhost:8080/consignment-orders`, fetcher);
+   const { data, error, isLoading } = useSWR<ConsignmentOrder[]>(
+    "/consignment-orders", // <- KEY
+    getOrders                // <- FETCHER, SEM EXECUTAR
+  );
+  console.log(data, error, isLoading);
   const formattedDate = (date: Date) => {
     const dateObj = new Date(date);
     if (!dateObj) return "";
@@ -38,18 +33,29 @@ export default function ConsignmentOrderPage() {
     });
   };
 
-
   if (isLoading) return <p className='p-4'>Loading...</p>;
   if (error) return <p className='p-4 text-red-500'>{error.message}</p>;
-  if (!data.length) return <p className='p-4'>{data.message}</p>;
-
+  if (!data)
+    return (
+      <p className='p-4'>{error?.message || "Resultados não encontrados"}</p>
+    );
 
   return (
-    <div className='px-4 pt-8'>
+    <div className='px-4 pt-4  max-w-6xl mx-auto'>
+      <div className='mb-6'>
+        <Link href={"/new-order"} className='rounded-full'>
+          <Button variant='default' className='flex items-center gap-2'>
+            <Plus className='w-4 h-4' />
+            Novo pedido
+          </Button>
+        </Link>
+      </div>
       <ul className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-        {data.map((order: any) => (
+        {data.map((order) => (
           <li key={order.id}>
-            <Link href={`/consignment-order/${order.id}`}>
+            <Link
+              href={`/consignment-order/${order.id}?name=${order.consignment.name}&phone_number=${order.consignment.phone_number}&created_at=${order.createdAt}`}
+            >
               <Card
                 className={`border-0 border-l-8 ${
                   order.paid ? "border-green-500" : "border-orange-500"

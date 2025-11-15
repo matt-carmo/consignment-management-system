@@ -1,10 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Prisma } from "@prisma/client";
-import { ConsignmentsService } from "../services/consignments";
+import { ConsignmentsService } from "../services/consignment.service";
+import { ConsignmentsRepository } from "../repositories/consignment-repository";
 export class ConsignmentsController {
   private consignmentsService;
   constructor() {
-    this.consignmentsService = new ConsignmentsService();
+    this.consignmentsService = new ConsignmentsService(new ConsignmentsRepository);
   }
   public async getAll(req: FastifyRequest, res: FastifyReply) {
     const consignments = await this.consignmentsService.getConsignments();

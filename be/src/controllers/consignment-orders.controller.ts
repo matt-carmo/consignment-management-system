@@ -1,12 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { ConsignmentOrdersService } from "../services/consignment-orders.service";
 import { ConsignmentsOrdersRepository } from "../repositories/consignment-orders.repository";
-import { Prisma } from "@prisma/client";
 import { ConsignmentOrderFilters } from "../types/consignment-orders/filters";
-
-
-
-
 
 export class ConsignmentOrdersController {
    private consignmentsOrdersService;

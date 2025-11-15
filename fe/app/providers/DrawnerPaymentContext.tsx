@@ -1,7 +1,10 @@
+import { ConsignmentOrderSummary } from "@/interfaces/consignment-order.interface";
 import { createContext, useContext, useState } from "react";
 
 interface PaymentContextValue {
-  consignmentOrderItems: unknown[];
+  consignmentOrderItems: ConsignmentOrderSummary[];
+  items: ConsignmentOrderSummary[];
+  setItems: React.Dispatch<React.SetStateAction<ConsignmentOrderSummary[]>>;
   totalValue: number;
   total: number;
   setTotal: React.Dispatch<React.SetStateAction<number>>;
@@ -9,7 +12,7 @@ interface PaymentContextValue {
 
 interface PaymentProviderProps {
   totalValue: number;
-  consignmentOrderItems: unknown[];
+  consignmentOrderItems: ConsignmentOrderSummary[];
   children: React.ReactNode;
 }
 
@@ -25,7 +28,7 @@ export function usePaymentContext () {
 
 export const PaymentProvider = ({ consignmentOrderItems, totalValue, children }: PaymentProviderProps) => {
   const [total, setTotal] = useState(totalValue);
-  const [items, setItems] = useState(consignmentOrderItems);
+  const [items, setItems] = useState<ConsignmentOrderSummary[]>(consignmentOrderItems);
 
 
   return (
