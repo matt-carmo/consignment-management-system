@@ -1,14 +1,14 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Prisma } from "@prisma/client";
 import { ConsignmentsService } from "../services/consignment.service";
-import { ConsignmentsRepository } from "../repositories/consignment-repository";
+import { ConsignmentsRepository } from "../repositories/consignment.repository";
 export class ConsignmentsController {
   private consignmentsService;
   constructor() {
     this.consignmentsService = new ConsignmentsService(new ConsignmentsRepository);
   }
   public async getAll(req: FastifyRequest, res: FastifyReply) {
-    const consignments = await this.consignmentsService.getConsignments();
+    const consignments = await this.consignmentsService.findAll();
     return res.send(consignments);
   }
   public async create(
@@ -26,6 +26,9 @@ export class ConsignmentsController {
     const consigment = await this.consignmentsService.create(data);
     return res.status(201).send(consigment);
   }
-  public async update(req: FastifyRequest, res: FastifyReply) {}
+  public async update(req: FastifyRequest<{Body: Prisma.ConsignmentUpdateInput, res: FastifyReply}>) {
+    const data = req.body
+    const consigment = await this.consignmentsService.update(data)
+  }
   public async delete(req: FastifyRequest, res: FastifyReply) {}
 }

@@ -1,8 +1,5 @@
-import { FastifyRequest } from "fastify";
-
 import { server } from "../server";
-import { Prisma } from "@prisma/client";
-import { ConsignmentsController } from "../controllers/consignments.controller";
+import { ConsignmentsController } from "../controllers/consignment.controller";
 
 export default async function consignmentsRoute() {
   const consignmentsController = new ConsignmentsController();
