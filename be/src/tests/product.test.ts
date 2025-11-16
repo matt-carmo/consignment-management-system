@@ -1,43 +1,37 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
 import { buildServer } from "../server";
 import type { FastifyInstance } from "fastify";
-import {  createTestProduct, createTestUser } from "./test-utils";
+import { createTestUser } from "./test-utils";
 
 let app: FastifyInstance;
-let consignmentCreatedId = "";
+let productCreatedId = "";
 
-beforeAll(async () => {
+describe("Product (HTTP)", () => {
+  beforeAll(async () => {
     app = buildServer();
     await app.ready();
 
-    await createTestUser(app);
-    await createTestProduct(app, "cf910abd-487a-492d-a78f-e274bdbb50d1");  });
+    createTestUser(app);
+
+  });
 
   afterAll(async () => {
-    await app.prisma.consignment.deleteMany({
-      where: {
-        id: consignmentCreatedId,
-      },
-    });
-    await app.prisma.consignment.deleteMany();
     await app.prisma.product.deleteMany();
     await app.prisma.user.deleteMany();
 
     await app.close();
   });
-describe("Consignment (HTTP)", () => {
-  
 
   const basePayload = {
-    name: "Teste Name",
-    phone_number: "18999999999",
+    name: "Produto Teste",
+    price: 10.50,
     userId: "cf910abd-487a-492d-a78f-e274bdbb50d1",
   };
 
-  it("should create a consignment", async () => {
+  it("should create a product", async () => {
     const response = await app.inject({
       method: "POST",
-      url: "/consignment",
+      url: "/product",
       payload: basePayload,
     });
 
@@ -45,20 +39,21 @@ describe("Consignment (HTTP)", () => {
 
     const body = response.json();
 
+
     expect(body).toHaveProperty("id");
     expect(body).toMatchObject({
       name: basePayload.name,
-      phone_number: basePayload.phone_number,
+      price: String(basePayload.price),
       userId: basePayload.userId,
     });
 
-    consignmentCreatedId = body.id;
+    productCreatedId = body.id;
   });
 
-  it("should get all consignments", async () => {
+  it("should get all products", async () => {
     const response = await app.inject({
       method: "GET",
-      url: "/consignments",
+      url: "/products",
     });
 
     expect(response.statusCode).toBe(200);
@@ -66,19 +61,19 @@ describe("Consignment (HTTP)", () => {
     const body = response.json();
     expect(Array.isArray(body)).toBe(true);
 
-    const found = body.some((c: any) => c.id === consignmentCreatedId);
+    const found = body.some((p: any) => p.id === productCreatedId);
     expect(found).toBe(true);
   });
 
-  it("should update a consignment", async () => {
+  it("should update a product", async () => {
     const updatedPayload = {
-      name: "Other Name",
-      phone_number: "Other Phone Number",
+      name: "Produto Atualizado",
+      price: 30.0,
     };
 
     const response = await app.inject({
       method: "PUT",
-      url: `/consignment/${consignmentCreatedId}`,
+      url: `/product/${productCreatedId}`,
       payload: updatedPayload,
     });
 
@@ -86,20 +81,23 @@ describe("Consignment (HTTP)", () => {
 
     const body = response.json();
 
-    expect(body).toMatchObject(updatedPayload);
+    expect(body).toMatchObject({
+      name: updatedPayload.name,
+      price: String(updatedPayload.price),
+    });
   });
 
-  it("should delete a consignment", async () => {
+  it("should delete a product", async () => {
     const response = await app.inject({
       method: "DELETE",
-      url: `/consignment/${consignmentCreatedId}`,
+      url: `/product/${productCreatedId}`,
     });
 
     expect(response.statusCode).toBe(204);
 
     const check = await app.inject({
       method: "GET",
-      url: `/consignment/${consignmentCreatedId}`,
+      url: `/product/${productCreatedId}`,
     });
     expect(check.statusCode).toBe(404);
   });

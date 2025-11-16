@@ -25,6 +25,7 @@ model Product {
     description String?
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
+    deleted     Boolean  @default(false)
     userId String
     user   User   @relation(fields: [userId], references: [id])
     consignmentOrderItems ConsignmentOrderItem[]
@@ -48,6 +49,7 @@ model ConsignmentOrder {
     consignmentId         String
     createdAt             DateTime               @default(now())
     updatedAt             DateTime               @updatedAt
+    deletedAt             DateTime?
     paid                  Boolean                @default(false)
     paidValue             Decimal?               @db.Decimal(10, 2)
     paidAt                DateTime?
@@ -57,11 +59,11 @@ model ConsignmentOrder {
 
 model ConsignmentOrderItem {
     id                 Int              @id @default(autoincrement())
+    deletedAt          DateTime?
     itemNameSnapshot   String
     itemPriceSnapshot  Decimal          @db.Decimal(10, 2)
     quantitySent       Int              @default(0)
     quantityReturned   Int              @default(0)
-    itemPrice          Decimal          @db.Decimal(10, 2)
     itemId             Int
     item               Product          @relation(fields: [itemId], references: [id])
     consignmentOrderId Int

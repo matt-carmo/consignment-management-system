@@ -11,7 +11,7 @@ import { ConsignmentOrder } from "@/interfaces/consignment-order.interface";
 import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import useSWR from "swr";
-import { getOrders } from "./lib/api/orders";
+import { getOrders } from "../lib/api/orders";
 
 
 // import { fetcher } from "./lib/api/fetcher";
@@ -41,7 +41,7 @@ export default function ConsignmentOrderPage() {
     );
 
   return (
-    <div className='px-4 pt-4  max-w-6xl mx-auto'>
+    <div className='px-4 pt-4  container mx-auto'>
       <div className='mb-6'>
         <Link href={"/new-order"} className='rounded-full'>
           <Button variant='default' className='flex items-center gap-2'>

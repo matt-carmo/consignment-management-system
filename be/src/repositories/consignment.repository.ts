@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { server } from "../server";
 
-export class ConsignmentsRepository {
+export class ConsignmentRepository {
   public async create(data: Prisma.ConsignmentCreateInput) {
     return server.prisma.consignment.create({ data });
   }
@@ -21,10 +21,28 @@ export class ConsignmentsRepository {
       }
     })
   }
+  public async findById(id: string) {
+    return server.prisma.consignment.findUnique({
+      where: {
+        id,
+        deletedAt: null
+      }
+    });
+  }
+
   public async findAll() {
     return server.prisma.consignment.findMany({
       where: {
         deletedAt: null 
+      },
+      orderBy: {
+        idx: 'asc'
+      },
+      select: {
+        id: true,
+        name: true,
+        phone_number: true,
+        
       }
     });
   }

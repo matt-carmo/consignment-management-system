@@ -11,4 +11,12 @@ export default async function productsRoute(server: FastifyInstance) {
         "/product",
         productsController.create.bind(productsController)
     );
+    server.put(
+        "/product/:id",
+        productsController.update.bind(productsController)
+    );
+    server.delete(
+        "/product/:id",
+        productsController.delete.bind(productsController)
+    );
 }
