@@ -5,7 +5,7 @@ async function start() {
   const server = buildServer();
 
   try {
-    const address = await server.listen({ port: 8080 });
+    const address = await server.listen({ port: 8080, host: "0.0.0.0" });
     console.log(`Server listening at ${address}`);
     console.log(process.env.POSTGRES_PORT);
   } catch (err) {
