@@ -15,7 +15,7 @@ export default function ConsignmentPage() {
 
   if (isLoading) return <p className='p-4'>Loading...</p>;
   if (error) return <p className='p-4 text-red-500'>{error.message}</p>;
-  if (!data)
+  if (!data?.length)
     return (
       <p className='p-4'>{error?.message || "Resultados não encontrados"}</p>
     );

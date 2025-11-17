@@ -56,7 +56,7 @@ export default function ConsignmentOrderPage() {
                     </p>
                     <p className='text-gray-500'>
                       Enviado{item.quantitySent > 1 ? "s" : ""}:{" "}
-                      {item.quantitySent} | Retornado
+                      {item.quantitySent} | Não vendido
                       {item.quantityReturned > 1 ? "s" : ""}:{" "}
                       {item.quantityReturned}
                     </p>
@@ -103,7 +103,7 @@ export default function ConsignmentOrderPage() {
                 </div>
 
                 <div className='flex justify-between'>
-                  <span>Total do valor retornado</span>
+                  <span>Total do valor não vendido</span>
                   <span>R$ {totalValueReturn.toFixed(2)}</span>
                 </div>
 
