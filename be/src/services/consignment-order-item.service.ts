@@ -1,15 +1,21 @@
 import { Prisma } from "@prisma/client";
 import { ConsignmentOrderItemRepository } from "../repositories/consignment-order-item.repository";
 import { ProductRepository } from "../repositories/product.repository";
-
+import { PayConsignmentOrder, PayConsignmentOrderItems } from "../types/consignment-orders/pay";
 
 export class ConsignmentOrderItemService {
   constructor(private repository: ConsignmentOrderItemRepository) {}
-    private productRepository = new ProductRepository();
+  private productRepository = new ProductRepository();
   public async create(data: Prisma.ConsignmentOrderItemCreateInput) {
     return this.repository.create(data);
   }
-    public async createMany({orderId, body}: {orderId: string; body: { itemId: number; quantitySent: number }[]}) {
+  public async createMany({
+    orderId,
+    body,
+  }: {
+    orderId: string;
+    body: { itemId: number; quantitySent: number }[];
+  }) {
     const productIds = body.map((item) => item.itemId);
     const products = await this.productRepository.findAllById(productIds);
     const productMap = Object.fromEntries(products.map((p) => [p.id, p]));
@@ -25,14 +31,32 @@ export class ConsignmentOrderItemService {
     });
     return this.repository.createMany(itemsData);
   }
-  public async update({ id, data }: { id: string; data: Prisma.ConsignmentOrderItemUncheckedUpdateInput }) {
+  public async updateMany({
+    items
+    
+  }: {
+    items: PayConsignmentOrderItems[];
+    
+  }) {
+   
+      return this.repository.updateMany({
+        items,
+      })
+  }
+
+  public async update({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Prisma.ConsignmentOrderItemUncheckedUpdateInput;
+  }) {
     return this.repository.update({ id, data });
   }
   public async delete(id: number) {
     return this.repository.delete(id);
   }
-//   public async findAllByConsignmentOrderId({consignmentOrderId}: {consignmentOrderId: number}) {
-//     return this.repository.findAllByConsignmentOrderId(consignmentOrderId)
-//   }
-  
+  //   public async findAllByConsignmentOrderId({consignmentOrderId}: {consignmentOrderId: number}) {
+  //     return this.repository.findAllByConsignmentOrderId(consignmentOrderId)
+  //   }
 }

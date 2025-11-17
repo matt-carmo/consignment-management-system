@@ -1,5 +1,7 @@
 "use client";
-import { usePaymentContext } from "@/app/providers/DrawnerPaymentContext";
+
+import { api } from "@/app/lib/api/fetcher";
+import { CounterItem } from "@/components/CounterItem";
 import { Button } from "@/components/ui/button";
 import {
   DrawerTrigger,
@@ -10,38 +12,98 @@ import {
   DrawerClose,
   Drawer,
 } from "@/components/ui/drawer";
+import { ConsignmentOrderItem } from "@/interfaces/consignment-order.interface";
 import { Minus, Plus } from "lucide-react";
 import { JSX, useState } from "react";
 
-export function DrawnerPayment({ consignmentOrderItems }): JSX.Element {
-  const { total, setTotal, totalValue } = usePaymentContext();
-  const { items, setItems } = usePaymentContext();
+
+interface PayConsignmentOrder {
+  items: {
+    id: number;
+    quantitySent?: number;
+    quantityReturned: number;
+  }[];
+  paid: boolean;
+  paidAt: Date;
+  paidValue?: number;
+}
+export function DrawnerPayment({
+  consignmentOrderItems,
+  totalValue,
+  orderId,
+  paid
+}: {
+  consignmentOrderItems: ConsignmentOrderItem[];
+  totalValue: number;
+  paid: boolean;
+  orderId: number
+}): JSX.Element {
+  const [total, setTotal] = useState(totalValue);
+
+  const [items, setItems] = useState<PayConsignmentOrder["items"]>(consignmentOrderItems.map((item) => ({
+    id: item.id,
+    quantitySent: item.quantitySent,
+    quantityReturned: item.quantityReturned
+  })));
+  // const { items, setItems } = usePaymentContext();
+
+  const handlePayment = async () => {
+    const response = await api.put(`/consignment-order/${orderId}/pay`, {
+      items,
+      paid: true,
+      
+    })
+    // const response = await api.put(`/consignment-order/${orderId}/pay`, {
+    //   items,
+    //   paid: true,
+      
+    // })
+  
+  }
   return (
-    <div className='flex gap-2 '>
+    <div className='flex gap-2 pb-2'>
       <Button variant={"ghost"} className='border-gray-300 border'>
         Voltar
       </Button>
       <Drawer>
         <DrawerTrigger asChild>
-          <Button onClick={() => {
-             setTotal(totalValue)
-             setItems(consignmentOrderItems)
-          }} className='flex-1'>Continuar</Button>
+          <Button onClick={() => {setTotal(totalValue)}} className='flex-1'>
+            {paid ? "Alterar pagamento" : "Registrar pagamento"}
+          </Button>
         </DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent className='max-w-4xl mx-auto'>
           <DrawerHeader>
             <DrawerTitle>Registrar pagamento</DrawerTitle>
           </DrawerHeader>
 
           <DrawerFooter>
-            <ul className='mb-4 w-full space-y-2'>
-              {consignmentOrderItems.map((item: any) => (
-                <ItemPaymentRow key={item.id} item={item} />
-              ))}
-            </ul>
+          <CounterItem
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            items={consignmentOrderItems.map((item: any) => ({
+              id: item.id,
+              name: item.itemNameSnapshot,
+              count: item.quantitySent,
+              max: item.quantitySent,
+              price: item.itemPriceSnapshot,
+            }))}
+            onChangeItens={(items) => {
+
+              setItems(items.map((item) => ({
+                  id: Number(item.id),
+                  quantitySent: item.max,
+                  quantityReturned: item.max - item.count,
+              })));  
+
+              console.log(items);
+              setTotal(
+                items.reduce((acc, item) => acc + item.price * item.count, 0)
+              );
+            }}
+          />
+
             <div>Total a pagar: R$ {total.toFixed(2)}</div>
 
-            <Button onClick={() => console.log(items)}>Confirmar</Button>
+            <Button onClick={handlePayment}>Confirmar</Button>
             <DrawerClose asChild>
               <Button className='flex-1' variant='outline'>
                 Cancelar
@@ -51,70 +113,5 @@ export function DrawnerPayment({ consignmentOrderItems }): JSX.Element {
         </DrawerContent>
       </Drawer>
     </div>
-  );
-}
-
-function ItemPaymentRow({ item }: { item: any }) {
- 
-  const [count, setCount] = useState(item.quantitySent);
-
-  const { setTotal, items, setItems } = usePaymentContext();
-
- const handleIncrement = (id) => {
-    if (count === item.quantitySent) return;
-    const itemTotalPrice = Number(item.itemPriceSnapshot);
-    setCount((prev: number) => prev + 1);
-    setTotal(prevTotal => prevTotal + itemTotalPrice);
-    setItems(prevItems => {
-      return prevItems.map(it => {
-        if (it.id === id) {
-          return {
-            ...it,
-            quantityReturned: (it.quantityReturned || 0) - 1,
-          };
-        }
-        return it;
-      });
-    });
-  };
-
-  const handleDecrement = (id) => {
-    if (count === 0) return;
-    const itemTotalPrice = Number(item.itemPriceSnapshot);
-    setCount((prev: number) => prev - 1);
-    setTotal(prevTotal => prevTotal - itemTotalPrice);
-    setItems(prevItems => {
-      return prevItems.map(it => {
-        if (it.id === id) {
-          return {
-            ...it,
-            quantityReturned: (it.quantityReturned || 0) + 1,
-          };
-        }
-        return it;
-      });
-    });
-
-  };
-
-  return (
-    <li className='flex items-center justify-between' key={item.id}>
-      <div>{item.itemNameSnapshot}</div>
-      <div>
-        <Button
-          onClick={() => handleDecrement(item.id)}
-          className='px-5 py-4 h-0 rounded-lg text-2xl'
-        >
-          <Minus />
-        </Button>
-        <span className='mx-2'>{count}</span>
-        <Button
-          onClick={() => handleIncrement(item.id)}
-          className='px-5 py-4 h-0 text-2xl'
-        >
-          <Plus />
-        </Button>
-      </div>
-    </li>
   );
 }

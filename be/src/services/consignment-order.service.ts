@@ -51,7 +51,11 @@ export class ConsignmentOrdersService {
     };
   }
 
-  public async pay({ orderId, paid, paidAt }: Omit<PayConsignmentOrder, 'paidValue'>) {
+  public async pay({
+    orderId,
+    paid,
+    paidAt,
+  }: Omit<PayConsignmentOrder, "paidValue">) {
     const consignmentOrder = await this.repository.findById({ orderId });
     if (!consignmentOrder) {
       throw new Error(ERRORS.CONSIGNMENT_NOT_FOUND);
@@ -63,8 +67,8 @@ export class ConsignmentOrdersService {
       return acc + price * quantity;
     }, 0);
 
-    if(!paid) {
-        return this.repository.pay({ orderId, paid, paidAt: null, paidValue: 0 });
+    if (!paid) {
+      return this.repository.pay({ orderId, paid, paidAt: null, paidValue: 0 });
     }
     return this.repository.pay({ orderId, paid, paidAt, paidValue });
   }
@@ -75,5 +79,8 @@ export class ConsignmentOrdersService {
     }
 
     return this.repository.create({ consignmentId });
+  }
+  public async delete({ orderId }: { orderId: number }) {
+    return this.repository.delete(orderId);
   }
 }

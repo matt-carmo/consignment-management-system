@@ -4,6 +4,8 @@ export interface ConsignmentOrder {
   consignmentId: string;
   createdAt: Date;
   updatedAt: Date;
+  totalValue: number;
+  totalValueReturn: number;
   paid: boolean;
   paidValue: number | null;
   paidAt: Date | null;

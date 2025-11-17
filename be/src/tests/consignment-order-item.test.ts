@@ -50,7 +50,8 @@ describe("Consignment Order (HTTP)", () => {
       })),
     });
     const body = response.json();
-    console.log(body);
+    
+   
     expect(response.statusCode).toBe(201);
   });
 });

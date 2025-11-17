@@ -23,7 +23,7 @@ export class ConsignmentOrderItemController {
   async update(
     req: FastifyRequest<{
       Params: { id: string };
-      Body: Prisma.ConsignmentOrderItemUncheckedUpdateInput;
+      Body: {ItemId: number; quantitySent: number; quantityReturned: number};
     }>,
     res: FastifyReply
   ) {
@@ -31,6 +31,7 @@ export class ConsignmentOrderItemController {
       id: req.params.id,
       data: req.body,
     });
+    
     return res.send(consignmentOrderItem);
   }
 //   async findAllByConsignmentOrderId(

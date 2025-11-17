@@ -1,6 +1,7 @@
 
 import type { FastifyInstance } from "fastify";
 import { buildServer } from "../server";
+import { Prisma } from "@prisma/client";
 
 // tests/test-utils.ts
 export async function createApp() {
@@ -42,5 +43,11 @@ export function createTestConsignmentOrder(app: FastifyInstance, consignmentId: 
     data: {
       consignmentId,
     },
+  });
+}
+
+export function createTestConsignmentOrderItem(app: FastifyInstance, data: Prisma.ConsignmentOrderItemUncheckedCreateInput) {
+  return app.prisma.consignmentOrderItem.create({
+    data,
   });
 }

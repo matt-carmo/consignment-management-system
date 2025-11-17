@@ -30,6 +30,7 @@ export class ConsignmentsOrdersRepository {
         consignmentId: params.consignmentId,
         paid: params.paid,
         createdAt: params.createdAt,
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -43,6 +44,7 @@ export class ConsignmentsOrdersRepository {
           select: {
             id: true,
             name: true,
+            phone_number: true,
             createdAt: true,
           },
         },
@@ -56,13 +58,23 @@ export class ConsignmentsOrdersRepository {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }
   public findById({ orderId }: { orderId: number }) {
     return server.prisma.consignmentOrderItem.findMany({
       where: {
         consignmentOrderId: orderId,
+        deletedAt: null,
       },
     });
   }
+    public async delete(orderId: number) {
+      return server.prisma.consignmentOrder.update({
+        where: { id: orderId },
+        data: { deletedAt: new Date() },
+      });
+    }
 }

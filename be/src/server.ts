@@ -16,6 +16,8 @@ export function buildServer() {
   server.register(prismaPlugin);
   server.register(cors, {
     origin: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
   });
 
   server.setErrorHandler((error:FastifyError, req, reply) => {
@@ -39,6 +41,7 @@ export function buildServer() {
   server.register(consignmentOrdersRoute);
   server.register(productsRoute);
   server.register(consignmentOrderItemRoute);
+
 
   return server;
 }

@@ -54,7 +54,7 @@ export default function ConsignmentOrderPage() {
         {data.map((order) => (
           <li key={order.id}>
             <Link
-              href={`/consignment-order/${order.id}?name=${order.consignment.name}&phone_number=${order.consignment.phone_number}&created_at=${order.createdAt}`}
+              href={`/consignment-order/${order.id}?name=${order.consignment.name}&paid=${order.paid}&paidAt=${order.paidAt}&phone_number=${order.consignment.phone_number}&created_at=${order.createdAt}`}
             >
               <Card
                 className={`border-0 border-l-8 ${
