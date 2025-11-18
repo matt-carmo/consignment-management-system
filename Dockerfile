@@ -2,10 +2,10 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-COPY ./be/package*.json ./
+COPY be/package*.json ./
 RUN npm install
 
-COPY ./be .
+COPY be .
 RUN npm run build
 RUN npx prisma generate
 
@@ -16,6 +16,5 @@ WORKDIR /app
 COPY --from=builder /app ./
 
 EXPOSE 8080
-EXPOSE 5555
 
 CMD ["npm", "run", "start"]
