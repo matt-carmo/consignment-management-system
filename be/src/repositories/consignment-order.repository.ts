@@ -4,8 +4,7 @@ import { ConsignmentOrderFilters } from "../types/consignment-orders/filters";
 import { PayConsignmentOrder } from "../types/consignment-orders/pay";
 
 export class ConsignmentsOrdersRepository {
-  public async create({consignmentId}: {consignmentId: string}) {
-
+  public async create({ consignmentId }: { consignmentId: string }) {
     return server.prisma.consignmentOrder.create({
       data: {
         consignmentId,
@@ -49,32 +48,54 @@ export class ConsignmentsOrdersRepository {
           },
         },
 
-        consignmentOrderItems: {
+        _count: {
           select: {
-            id: true,
-            quantitySent: true,
-            itemPriceSnapshot: true,
-            quantityReturned: true,
+            consignmentOrderItems: {
+              where: {
+                deletedAt: null,
+              },
+            },
           },
         },
       },
+
       orderBy: {
         createdAt: "desc",
       },
     });
   }
-  public findById({ orderId }: { orderId: number }) {
-    return server.prisma.consignmentOrderItem.findMany({
+
+  public agregateTotalSoldAndValue({ orderId }: { orderId: number }) {
+    return server.prisma.consignmentOrderItem.aggregate({
       where: {
         consignmentOrderId: orderId,
         deletedAt: null,
       },
+      _sum: {
+        quantitySent: true,
+        itemPriceSnapshot: true,
+      },
     });
   }
-    public async delete(orderId: number) {
-      return server.prisma.consignmentOrder.update({
-        where: { id: orderId },
-        data: { deletedAt: new Date() },
-      });
-    }
+  public findById({ orderId }: { orderId: number }) {
+    return server.prisma.consignmentOrder.findMany({
+      where: {
+        id: orderId,
+        deletedAt: null,
+      },
+      include: {
+        consignmentOrderItems: {
+          where: {
+            deletedAt: null,
+          },
+        },
+      },
+    });
+  }
+  public async delete(orderId: number) {
+    return server.prisma.consignmentOrder.update({
+      where: { id: orderId },
+      data: { deletedAt: new Date() },
+    });
+  }
 }
