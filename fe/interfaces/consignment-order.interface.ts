@@ -1,5 +1,8 @@
 
 export interface ConsignmentOrder {
+  _count: {
+    consignmentOrderItems: number;
+  };
   id: number;
   consignmentId: string;
   createdAt: Date;
