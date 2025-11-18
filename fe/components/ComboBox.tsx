@@ -65,7 +65,7 @@ export function ComboboxDemo({
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
+            : "Selecione um consignado"}
           <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>

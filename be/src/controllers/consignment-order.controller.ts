@@ -38,10 +38,7 @@ export class ConsignmentOrderController {
       return reply
         .status(400)
         .send({ message: "Erro ao atualizar os itens do pedido" });
-    }
-
- 
-     
+    }    
     const consignmentOrder = await this.consignmentsOrdersService.pay({
       orderId: Number(orderId),
       paid: request.body.paid,
@@ -87,5 +84,6 @@ export class ConsignmentOrderController {
       orderId: Number(request.params.orderId),
     });
     return reply.send(consignmentOrder);
+
   }
 }

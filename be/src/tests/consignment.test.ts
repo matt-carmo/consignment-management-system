@@ -11,7 +11,12 @@ beforeAll(async () => {
     await app.ready();
 
     await createTestUser(app);
-    await createTestProduct(app, "cf910abd-487a-492d-a78f-e274bdbb50d1");  });
+    await createTestProduct(app, {
+        description: "Test Product Description",
+        name: "Test Product",
+        price: 100,
+        userId: "cf910abd-487a-492d-a78f-e274bdbb50d1",
+    });  });
 
   afterAll(async () => {
     await app.prisma.consignment.deleteMany({

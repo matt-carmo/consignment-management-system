@@ -7,3 +7,7 @@ export const api = axios.create({
         'Content-Type': 'application/json',
     },
 });
+export default api;
+export const fetcher = (url: string) => api.get(url).then(res => {
+    return res.data;
+}).catch(err => { throw err });

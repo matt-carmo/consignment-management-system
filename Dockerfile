@@ -1,7 +1,9 @@
-FROM node:22-alpine
+# Stage 1: builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY ./be/package*.json ./
 RUN npm install
 COPY ./be .
-EXPOSE 8080
-CMD ["npm", "run", ""]
+RUN npm run build
+
+# Stage 2: runner

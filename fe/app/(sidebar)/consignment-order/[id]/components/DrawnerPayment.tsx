@@ -13,8 +13,8 @@ import {
   Drawer,
 } from "@/components/ui/drawer";
 import { ConsignmentOrderItem } from "@/interfaces/consignment-order.interface";
-import { Minus, Plus } from "lucide-react";
 import { JSX, useState } from "react";
+import { mutate } from "swr";
 
 
 interface PayConsignmentOrder {
@@ -45,28 +45,30 @@ export function DrawnerPayment({
     quantitySent: item.quantitySent,
     quantityReturned: item.quantityReturned
   })));
-  // const { items, setItems } = usePaymentContext();
-
-  const handlePayment = async () => {
+  const [open, setOpen] = useState(false);
+const handlePayment = async () => {
+  try {
     const response = await api.put(`/consignment-order/${orderId}/pay`, {
       items,
       paid: true,
-      
-    })
-    // const response = await api.put(`/consignment-order/${orderId}/pay`, {
-    //   items,
-    //   paid: true,
-      
-    // })
-  
+    });
+
+    if (response.status === 200) {
+        mutate(`/consignment-order/${orderId}`);
+        setOpen(false)
+    }
+  } catch (error) {
+    console.error("Erro ao registrar pagamento:", error);
   }
+};
+
   return (
     <div className='flex gap-2 pb-2'>
       <Button variant={"ghost"} className='border-gray-300 border'>
         Voltar
       </Button>
-      <Drawer>
-        <DrawerTrigger asChild>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger  asChild>
           <Button onClick={() => {setTotal(totalValue)}} className='flex-1'>
             {paid ? "Alterar pagamento" : "Registrar pagamento"}
           </Button>
@@ -87,14 +89,11 @@ export function DrawnerPayment({
               price: item.itemPriceSnapshot,
             }))}
             onChangeItens={(items) => {
-
               setItems(items.map((item) => ({
                   id: Number(item.id),
                   quantitySent: item.max,
                   quantityReturned: item.max - item.count,
               })));  
-
-              console.log(items);
               setTotal(
                 items.reduce((acc, item) => acc + item.price * item.count, 0)
               );

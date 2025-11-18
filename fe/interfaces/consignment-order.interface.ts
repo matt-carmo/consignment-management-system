@@ -13,7 +13,7 @@ export interface ConsignmentOrder {
   paidValue: number | null;
   paidAt: Date | null;
   consignment: Consignment;
-  consignmentOrderItems: ConsignmentOrderItem[];
+  order: ConsignmentOrderItem[];
   quantitySent: number;
 }
 
@@ -39,4 +39,21 @@ export interface ConsignmentOrderItem {
   itemPriceSnapshot: string;
   itemNameSnapshot: string;
   quantityReturned: number;
+}
+
+
+export interface iOrder {
+    order: {
+    consignment: Consignment;
+    consignmentOrderItems: ConsignmentOrderItem[];
+    id: number;
+    consignmentId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    paid: boolean;
+    paidValue: number | null;
+    paidAt: Date | null;
+    };
+    totalValue: number;
+    totalValueReturn: number;
 }

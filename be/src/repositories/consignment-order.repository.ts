@@ -78,12 +78,21 @@ export class ConsignmentsOrdersRepository {
     });
   }
   public findById({ orderId }: { orderId: number }) {
-    return server.prisma.consignmentOrder.findMany({
+    return server.prisma.consignmentOrder.findUnique({
       where: {
         id: orderId,
         deletedAt: null,
       },
       include: {
+        consignment: {
+            omit: {
+                createdAt: true,
+                updatedAt: true,
+                userId: true,
+                deletedAt: true,
+                idx: true
+            }
+        },
         consignmentOrderItems: {
           where: {
             deletedAt: null,
