@@ -54,7 +54,7 @@ export default function ConsignmentOrderPage() {
         {data.map((order) => (
           <li key={order.id}>
             <Link
-              href={`/consignment-order/${order.id}?name=${order.consignment.name}&paid=${order.paid}&paidAt=${order.paidAt}&phone_number=${order.consignment.phone_number}&created_at=${order.createdAt}`}
+              href={`/consignment-order/${order.id}`}
             >
               <Card
                 className={`border-0 border-l-8 ${
@@ -72,7 +72,15 @@ export default function ConsignmentOrderPage() {
                 </CardHeader>
                 <CardContent className='flex items-center gap-2'>
                   <Package className='w-5 h-5 text-gray-600' />
-                  <p> {order.quantitySent} items</p>
+                  {order._count.consignmentOrderItems > 0 ? (
+                    <p>
+                      {" "}
+                      {order._count.consignmentOrderItems} iten
+                      {order._count.consignmentOrderItems > 1 && "s"}
+                    </p>
+                  ) : (
+                    <p className='text-gray-400'>Sem itens</p>
+                  )}
                 </CardContent>
               </Card>
             </Link>
