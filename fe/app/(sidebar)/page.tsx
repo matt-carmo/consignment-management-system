@@ -44,11 +44,12 @@ export default function ConsignmentOrderPage() {
           </Button>
         </Link>
       </div>
-      {data?.length === 0 ? (
-        <p className='text-gray-400 text-lg'>Nenhum pedido encontrado</p>
-      ) : (
+      {!data?.length && (
+        <p>{error?.message || "Resultados não encontrados"}</p>
+      )}
+      {data?.length && (
         <ul className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-          {data?.map((order) => (
+          {data.map((order) => (
             <li key={order.id}>
               <Link href={`/consignment-order/${order.id}`}>
                 <Card
