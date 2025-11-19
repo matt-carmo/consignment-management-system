@@ -13,14 +13,12 @@ import Link from "next/link";
 import useSWR from "swr";
 import { getOrders } from "../lib/api/orders";
 
-
 // import { fetcher } from "./lib/api/fetcher";
 
-
 export default function ConsignmentOrderPage() {
-   const { data, error, isLoading } = useSWR<ConsignmentOrder[]>(
+  const { data, error, isLoading } = useSWR<ConsignmentOrder[]>(
     "/consignment-orders", // <- KEY
-    getOrders                // <- FETCHER, SEM EXECUTAR
+    getOrders // <- FETCHER, SEM EXECUTAR
   );
   console.log(data, error, isLoading);
   const formattedDate = (date: Date) => {
@@ -35,10 +33,6 @@ export default function ConsignmentOrderPage() {
 
   if (isLoading) return <p className='p-4'>Loading...</p>;
   if (error) return <p className='p-4 text-red-500'>{error.message}</p>;
-  if (!data?.length)
-    return (
-      <p className='p-4'>{error?.message || "Resultados não encontrados"}</p>
-    );
 
   return (
     <div className='px-4 pt-4  container mx-auto'>
@@ -50,43 +44,45 @@ export default function ConsignmentOrderPage() {
           </Button>
         </Link>
       </div>
-      <ul className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-        {data.map((order) => (
-          <li key={order.id}>
-            <Link
-              href={`/consignment-order/${order.id}`}
-            >
-              <Card
-                className={`border-0 border-l-8 ${
-                  order.paid ? "border-green-500" : "border-orange-500"
-                }`}
-              >
-                <CardHeader>
-                  <CardTitle className='flex items-center justify-between'>
-                    {order.consignment.name}{" "}
-                    <span className='text-gray-400 text-sm'>#{order.id}</span>
-                  </CardTitle>
-                  <CardDescription>
-                    {formattedDate(order.createdAt)}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='flex items-center gap-2'>
-                  <Package className='w-5 h-5 text-gray-600' />
-                  {order._count.consignmentOrderItems > 0 ? (
-                    <p>
-                      {" "}
-                      {order._count.consignmentOrderItems} iten
-                      {order._count.consignmentOrderItems > 1 && "s"}
-                    </p>
-                  ) : (
-                    <p className='text-gray-400'>Sem itens</p>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {data?.length === 0 ? (
+        <p className='text-gray-400 text-lg'>Nenhum pedido encontrado</p>
+      ) : (
+        <ul className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+          {data?.map((order) => (
+            <li key={order.id}>
+              <Link href={`/consignment-order/${order.id}`}>
+                <Card
+                  className={`border-0 border-l-8 ${
+                    order.paid ? "border-green-500" : "border-orange-500"
+                  }`}
+                >
+                  <CardHeader>
+                    <CardTitle className='flex items-center justify-between'>
+                      {order.consignment.name}{" "}
+                      <span className='text-gray-400 text-sm'>#{order.id}</span>
+                    </CardTitle>
+                    <CardDescription>
+                      {formattedDate(order.createdAt)}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className='flex items-center gap-2'>
+                    <Package className='w-5 h-5 text-gray-600' />
+                    {order._count.consignmentOrderItems > 0 ? (
+                      <p>
+                        {" "}
+                        {order._count.consignmentOrderItems} iten
+                        {order._count.consignmentOrderItems > 1 && "s"}
+                      </p>
+                    ) : (
+                      <p className='text-gray-400'>Sem itens</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
