@@ -14,7 +14,7 @@ export class ProductService {
     public async delete(id: number) {
         return this.productRepository.delete(id);
     }
-    public async findAll() {
-        return this.productRepository.findAll();
+    public async findAll({userId}: {userId: string}) {
+        return this.productRepository.findAll({userId});
     }
 }

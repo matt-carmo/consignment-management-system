@@ -23,7 +23,13 @@ const items = [
     title: "Consignados",
     url: "/consignment",
     icon: Inbox,
-  }
+  },
+  {
+    title: "Produtos",
+    url: "/product",
+    icon: Calendar,
+  },
+
 ]
 
 export function AppSidebar() {

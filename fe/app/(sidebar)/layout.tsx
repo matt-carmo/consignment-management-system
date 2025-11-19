@@ -9,9 +9,9 @@ export default function SidebarLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1">
+      <main className='flex-1'>
         <SidebarTrigger />
-        {children}
+        <div className='max-w-7xl mx-auto px-4'>{children}</div>
       </main>
     </SidebarProvider>
   );

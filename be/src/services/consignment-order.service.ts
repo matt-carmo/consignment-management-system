@@ -3,7 +3,6 @@ import { ConsignmentsOrdersRepository } from "../repositories/consignment-order.
 import { ConsignmentOrderFilters } from "../types/consignment-orders/filters";
 import { PayConsignmentOrder } from "../types/consignment-orders/pay";
 
-
 export class ConsignmentOrdersService {
   constructor(private repository: ConsignmentsOrdersRepository) {}
   public async findAllByUserId({
@@ -12,35 +11,52 @@ export class ConsignmentOrdersService {
     params: ConsignmentOrderFilters;
   }) {
     const consignmentsOrders = await this.repository.findAllById({ params });
-    
+
     if (!consignmentsOrders.length) {
       throw new Error(ERRORS.CONSIGNMENTS_NOT_FOUND);
     }
+    const newsOrdersWithQuantities = consignmentsOrders.map((order) => {
+      let quantityTotalSent = 0;
+      let quantityTotalReturned = 0;
 
-    return consignmentsOrders;
+      order.consignmentOrderItems.forEach((item: any) => {
+        quantityTotalSent += item.quantitySent;
+        quantityTotalReturned += item.quantityReturned;
+      });
+
+      return {
+        ...order,
+        quantityTotalSent,
+        quantityTotalReturned,
+      };
+    });
+    return newsOrdersWithQuantities;
   }
   public async findById({ orderId }: { orderId: number }) {
     const order = await this.repository.findById({ orderId });
     if (!order) {
       throw new Error(ERRORS.CONSIGNMENT_NOT_FOUND);
     }
+
     const totalValue = order?.consignmentOrderItems.reduce((acc, item: any) => {
       const price = Number(item.itemPriceSnapshot);
       const quantity = Number(item.quantitySent);
       return acc + price * quantity;
     }, 0);
-    const totalValueReturn = order?.consignmentOrderItems.reduce((acc, item: any) => {
-      const price = Number(item.itemPriceSnapshot);
-      const quantity = Number(item.quantityReturned);
-      return acc + price * quantity;
-    }, 0);
+    const totalValueReturn = order?.consignmentOrderItems.reduce(
+      (acc, item: any) => {
+        const price = Number(item.itemPriceSnapshot);
+        const quantity = Number(item.quantityReturned);
+        return acc + price * quantity;
+      },
+      0
+    );
 
     return {
       order,
       totalValue,
       totalValueReturn,
     };
-
   }
 
   public async pay({
@@ -52,12 +68,15 @@ export class ConsignmentOrdersService {
     if (!consignmentOrder) {
       throw new Error(ERRORS.CONSIGNMENT_NOT_FOUND);
     }
-    const paidValue = consignmentOrder.consignmentOrderItems.reduce((acc, item: any) => {
-      const price = Number(item.itemPriceSnapshot);
-      const quantitySent = Number(item.quantitySent);
-      const quantity = quantitySent - (item.quantityReturned || 0);
-      return acc + price * quantity;
-    }, 0);
+    const paidValue = consignmentOrder.consignmentOrderItems.reduce(
+      (acc, item: any) => {
+        const price = Number(item.itemPriceSnapshot);
+        const quantitySent = Number(item.quantitySent);
+        const quantity = quantitySent - (item.quantityReturned || 0);
+        return acc + price * quantity;
+      },
+      0
+    );
 
     if (!paid) {
       return this.repository.pay({ orderId, paid, paidAt: null, paidValue: 0 });

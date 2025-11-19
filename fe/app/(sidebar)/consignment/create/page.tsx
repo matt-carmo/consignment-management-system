@@ -1,27 +1,47 @@
-'use client';
+"use client";
 import { createConsignment } from "@/app/lib/api/consignment";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function ConsignmentCreatePage() {
-
   const [form, setForm] = useState({
-    name: '',
-    phone_number: ''
-  })
+    name: "",
+    phone_number: "",
+  });
+
+  const [loading, setLoading] = useState(false);
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const res = await createConsignment(form)
-    console.log(res)
+    setLoading(true);
+    e.preventDefault();
+    const res = await createConsignment(form);
+    if (res) {
+      window.location.href = "/consignment";
+    }
+    setLoading(false);
   }
   return (
-    <div>
+    <div className='mx-auto'>
+      <Button className="rounded-full" variant={"secondary"} asChild>
+        <Link href={"/consignment"}><ArrowLeft /></Link>
+      </Button>
       <h1 className='text-2xl font-bold'>Criar Novo Consignado</h1>
-      <form onSubmit={handleSubmit}>
-        <Input onChange={(e) => setForm({...form, name: e.target.value})} placeholder="Nome" />
-        <Input onChange={(e) => setForm({...form, phone_number: e.target.value})} placeholder="Telefone" />
-        <Button>Salvar</Button>
+      <form className='space-y-2' onSubmit={handleSubmit}>
+        <Input
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          placeholder='Nome'
+        />
+        <Input
+          onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+          placeholder='Telefone'
+        />
+        {loading ? (
+          <Button disabled><LoaderCircle className="animate-spin" /></Button>
+        ) : (
+          <Button type='submit'>Criar</Button>
+        )}
       </form>
     </div>
   );

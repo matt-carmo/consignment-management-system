@@ -13,7 +13,7 @@ const PrismaPlugin: FastifyPluginAsync = fp(async (server, options) => {
   await prisma.$connect().then(() => {
     console.log('Connected to database')
   }).catch((err) => {
-    console.error(err)
+    // console.error(err)
   })
 
   // Make Prisma Client available through the fastify server instance: server.prisma

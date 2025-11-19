@@ -9,9 +9,16 @@ export class ProductController {
     this.productService = new ProductService();
   }
   async create(
-    req: FastifyRequest<{ Body: Prisma.ProductCreateInput }>,
+    req: FastifyRequest<{
+      Body: Prisma.ProductCreateInput & { userId: string };
+    }>,
     res: FastifyReply
   ) {
+    await req.jwtVerify();
+
+    const user = req.user as { userId: string };
+    const userId = user.userId;
+    req.body.userId = userId;
     const data = req.body;
     const product = await this.productService.create(data);
     return res.status(201).send(product);
@@ -28,8 +35,11 @@ export class ProductController {
     const product = await this.productService.update({ id, data });
     return res.send(product);
   }
-  async getAll() {
-    return await this.productService.findAll();
+  async getAll(req: FastifyRequest, res: FastifyReply) {
+    await req.jwtVerify();
+    const user = req.user as { userId: string };
+    const userId = user.userId;
+    return await this.productService.findAll({userId});
   }
   async delete(
     req: FastifyRequest<{ Params: { id: string } }>,

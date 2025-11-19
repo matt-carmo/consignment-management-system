@@ -1,3 +1,4 @@
+import { FastifyJWT } from "@fastify/jwt";
 import "@fastify/type-provider-typebox";
 import { PrismaClient } from "@prisma/client";
 
@@ -10,5 +11,11 @@ declare module "fastify" {
   }
   interface FastifyInstance {
     consignmentsOrdersService: ConsignmentsOrdersService
+  }
+  interface FastifyRequest {
+    jwtVerify: JwtVerify;
+  }
+  interface FastifyInstance {
+    jwt: FastifyJWT;
   }
 }

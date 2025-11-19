@@ -1,14 +1,11 @@
-
 export interface ConsignmentOrder {
-  _count: {
-    consignmentOrderItems: number;
-  };
   id: number;
   consignmentId: string;
   createdAt: Date;
   updatedAt: Date;
   totalValue: number;
-  totalValueReturn: number;
+  quantityTotalSent: number;
+  quantityTotalReturned: number;
   paid: boolean;
   paidValue: number | null;
   paidAt: Date | null;
@@ -18,14 +15,15 @@ export interface ConsignmentOrder {
 }
 
 export interface ConsignmentOrderSummary {
-    totalValue: number;
-    totalValueReturn: number;
+  totalValue: number;
+  totalValueReturn: number;
 }
 
 export interface Consignment {
   id: string;
   idx: number;
   name: string;
+
   phone_number: string;
   createdAt: Date;
   updatedAt: Date;
@@ -41,9 +39,8 @@ export interface ConsignmentOrderItem {
   quantityReturned: number;
 }
 
-
 export interface iOrder {
-    order: {
+  order: {
     consignment: Consignment;
     consignmentOrderItems: ConsignmentOrderItem[];
     id: number;
@@ -53,7 +50,7 @@ export interface iOrder {
     paid: boolean;
     paidValue: number | null;
     paidAt: Date | null;
-    };
-    totalValue: number;
-    totalValueReturn: number;
+  };
+  totalValue: number;
+  totalValueReturn: number;
 }

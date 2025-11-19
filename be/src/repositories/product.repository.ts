@@ -2,8 +2,18 @@ import { Prisma } from "@prisma/client";
 import { server } from "../server";
 
 export class ProductRepository {
-  async findAll() {
-    return server.prisma.product.findMany();
+  async findAll({userId}: {userId: string}) {
+    return server.prisma.product.findMany(
+        {
+            where: {
+                deleted: false,
+                userId
+            },
+            orderBy: {
+                name: 'asc'
+            }
+        }
+    );
   }
   async findAllById(productIds: number[]) {
     return server.prisma.product.findMany({

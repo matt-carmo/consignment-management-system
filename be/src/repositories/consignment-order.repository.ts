@@ -48,13 +48,11 @@ export class ConsignmentsOrdersRepository {
           },
         },
 
-        _count: {
+        consignmentOrderItems: {
+          where: { deletedAt: null },
           select: {
-            consignmentOrderItems: {
-              where: {
-                deletedAt: null,
-              },
-            },
+            quantitySent: true,
+            quantityReturned: true,
           },
         },
       },
@@ -85,13 +83,13 @@ export class ConsignmentsOrdersRepository {
       },
       include: {
         consignment: {
-            omit: {
-                createdAt: true,
-                updatedAt: true,
-                userId: true,
-                deletedAt: true,
-                idx: true
-            }
+          omit: {
+            createdAt: true,
+            updatedAt: true,
+            userId: true,
+            deletedAt: true,
+            idx: true,
+          },
         },
         consignmentOrderItems: {
           where: {

@@ -35,7 +35,7 @@ export default function ConsignmentOrderPage() {
   if (error) return <p className='p-4 text-red-500'>{error.message}</p>;
 
   return (
-    <div className='px-4 pt-4  container mx-auto'>
+    <div className='container mx-auto'>
       <div className='mb-6'>
         <Link href={"/new-order"} className='rounded-full'>
           <Button variant='default' className='flex items-center gap-2'>
@@ -44,9 +44,7 @@ export default function ConsignmentOrderPage() {
           </Button>
         </Link>
       </div>
-      {!data?.length && (
-        <p>{error?.message || "Resultados não encontrados"}</p>
-      )}
+      {!data?.length && <p>{error?.message || "Resultados não encontrados"}</p>}
       {data?.length && (
         <ul className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {data.map((order) => (
@@ -68,11 +66,11 @@ export default function ConsignmentOrderPage() {
                   </CardHeader>
                   <CardContent className='flex items-center gap-2'>
                     <Package className='w-5 h-5 text-gray-600' />
-                    {order._count.consignmentOrderItems > 0 ? (
+                    {order.quantityTotalSent > 0 ? (
                       <p>
                         {" "}
-                        {order._count.consignmentOrderItems} iten
-                        {order._count.consignmentOrderItems > 1 && "s"}
+                        {order.quantityTotalSent} iten
+                        {order.quantityTotalSent > 1 && "s"}
                       </p>
                     ) : (
                       <p className='text-gray-400'>Sem itens</p>
