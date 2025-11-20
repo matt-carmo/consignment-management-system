@@ -6,6 +6,8 @@ import useSWR from "swr";
 import { iOrder } from "@/interfaces/consignment-order.interface";
 import { DrawnerPayment } from "./components/DrawnerPayment";
 import {fetcher} from "@/app/lib/api/fetcher";
+import { Delete, DeleteIcon, Trash } from "lucide-react";
+import { ModalDelete } from "@/components/ModalDelete";
 
 
 
@@ -34,7 +36,10 @@ export default function ConsignmentOrderDetailsPage() {
   return (
     <div className='max-w-6xl mx-auto space-y-2 px-4'>
       <div>
-        <h1 className='text-2xl font-bold text-gray-800'>Order #{id}</h1>
+        <div className='flex items-center gap-2'>
+          <h1 className='text-2xl font-bold text-gray-800'>Order #{id}</h1>
+           <ModalDelete endpoint={`/consignment-order/${id}`}/>
+        </div>
         <h2 className='text-lg font-semibold text-gray-700'>{order?.consignment?.name}</h2>
       </div>
 
