@@ -8,6 +8,8 @@ import { CounterItem } from "@/components/CounterItem";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 
 export default function NewOrderPage() {
   const router = useRouter();
@@ -35,7 +37,24 @@ export default function NewOrderPage() {
   if (isLoading) return <p className='p-4'>Loading...</p>;
   if (error) return <p className='p-4 text-red-500'>{error.message}</p>;
 
-  const searchableData = data?.consignments.data.map(
+  if(!data?.consignments.data?.length) {
+    return <div>
+      <Alert className="w-fit" variant="destructive">
+        <AlertCircleIcon />
+        <AlertTitle>Consignados não encontrados</AlertTitle>
+        <AlertDescription>
+          <p>Please verify your billing information and try again.</p>
+          <ul className="list-inside list-disc text-sm">
+            <li>Clique em &quot;Criar consignado&quot;</li>
+            <li>Aperte em &quot;Novoo&quot;</li>
+            <li>Volte para essa tela</li>
+          </ul>
+            <Button variant="outline" className="w-full text-black" onClick={() => router.push("/consignment")}>Criar consignação</Button>
+        </AlertDescription>
+      </Alert>
+    </div>
+  }
+  const searchableData = data?.consignments?.data?.map(
     (consignment: { id: string; name: string }) => ({
       value: consignment.id,
       label: `${consignment.name}`,

@@ -10,6 +10,17 @@ export const createConsignment = async (data: {
  
   return res.data;
 };
+
+export const editConsignment = async (id: string, data: {
+  name: string;
+  phone_number: string;
+}) => {
+  const res = await api.put(`/consignment/${id}`, data);
+
+  if (res.status !== 200) throw new Error("Failed to update consignment");
+ 
+  return res.data;
+}
 export const getConsignments = async () => {
   const res = await api.get("/consignments");
 

@@ -6,8 +6,8 @@ import useSWR from "swr";
 import { iOrder } from "@/interfaces/consignment-order.interface";
 import { DrawnerPayment } from "./components/DrawnerPayment";
 import {fetcher} from "@/app/lib/api/fetcher";
-import { Delete, DeleteIcon, Trash } from "lucide-react";
 import { ModalDelete } from "@/components/ModalDelete";
+import { formatMoneyBRL } from "@/lib/formatMoneyBRL";
 
 
 
@@ -65,14 +65,13 @@ export default function ConsignmentOrderDetailsPage() {
 
                 <div className='text-right'>
                   <p>
-                    R$ {parseFloat(item.itemPriceSnapshot).toFixed(2)} x{" "}
+                    {formatMoneyBRL(Number(item.itemPriceSnapshot))} x{" "}
                     {item.quantitySent}
                   </p>
                   <p className='font-semibold text-gray-800'>
-                    R${" "}
-                    {(
-                      parseFloat(item.itemPriceSnapshot) * item.quantitySent
-                    ).toFixed(2)}
+                    {formatMoneyBRL(
+                      Number(item.itemPriceSnapshot) * item.quantitySent
+                    )}
                   </p>
                 </div>
               </div>
@@ -100,13 +99,13 @@ export default function ConsignmentOrderDetailsPage() {
             <CardContent className='text-sm space-y-2 pt-4'>
               <div className='flex justify-between'>
                 <span>Total</span>
-                <span>R$ {totalValue.toFixed(2)}</span>
+                <span>{formatMoneyBRL(totalValue)}</span>
               </div>
 
               <div className='flex justify-between'>
                 <span>Retorno</span>
                 <span className='text-red-500'>
-                  R$ {totalValueReturn.toFixed(2)}
+                  {formatMoneyBRL(totalValueReturn)}
                 </span>
               </div>
 
@@ -114,7 +113,7 @@ export default function ConsignmentOrderDetailsPage() {
 
               <div className='flex justify-between font-semibold text-gray-900'>
                 <span>Total {order.paid ? "pago" : "estimado pendente"}</span>
-                <span>R$ {(totalValue - totalValueReturn).toFixed(2)}</span>
+                <span>{formatMoneyBRL(totalValue - totalValueReturn)}</span>
               </div>
             </CardContent>
           </Card>

@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Suspense } from "react";
 
 export default function SidebarLayout({
   children,
@@ -11,7 +12,12 @@ export default function SidebarLayout({
       <AppSidebar />
       <main className='flex-1'>
         <SidebarTrigger />
-        <div className='max-w-7xl mx-auto px-4'>{children}</div>
+        <div className='max-w-7xl mx-auto px-4'>
+          <Suspense>
+
+          {children}
+          </Suspense>
+          </div>
       </main>
     </SidebarProvider>
   );

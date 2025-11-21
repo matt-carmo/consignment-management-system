@@ -1,4 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+'use client';
+import { Calendar, Home, Inbox } from "lucide-react";
 
 import {
   Sidebar,
@@ -9,8 +10,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+  useSidebar,
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -29,10 +31,10 @@ const items = [
     url: "/product",
     icon: Calendar,
   },
-
-]
+];
 
 export function AppSidebar() {
+  const { setOpenMobile, isMobile } = useSidebar();
   return (
     <Sidebar>
       <SidebarContent>
@@ -43,7 +45,7 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link onClick={() => isMobile && setOpenMobile(false)} href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -55,5 +57,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
